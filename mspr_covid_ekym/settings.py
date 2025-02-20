@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'rest_framework',
+    'corsheaders',
     'covid_data.apps.CovidDataConfig'
 ]
 
