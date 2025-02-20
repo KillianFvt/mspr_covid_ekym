@@ -1,0 +1,191 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/covid-data/:
+    get:
+      operationId: listCovidData
+      description: Return a list of all the existing CovidData instances.
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CovidData'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createCovidData
+      description: Create a new CovidData instance.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovidData'
+          description: ''
+      tags:
+      - api
+  /api/covid-data/{id}/:
+    get:
+      operationId: retrieveCovidData
+      description: Return the given CovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this covid data.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovidData'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateCovidData
+      description: Update the given CovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this covid data.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovidData'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateCovidData
+      description: Partially update the given CovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this covid data.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CovidData'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovidData'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyCovidData
+      description: Delete the given CovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this covid data.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    CovidData:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date
+        country_region:
+          type: string
+          maxLength: 100
+        continent:
+          type: string
+          maxLength: 100
+        population:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        total_cases:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        total_death:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        total_recovered:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        active_cases:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+      required:
+      - date
+      - country_region
+      - continent
+      - population
+      - total_cases
+      - total_death
+      - total_recovered
+      - active_cases
