@@ -36,6 +36,16 @@
     pip install -r requirements.txt
     ```
 
+### Installing the Database Drivers (Azure SQL Server)
+
+>[Download Microsoft ODBC Driver 18 for SQL Server (x64)](https://go.microsoft.com/fwlink/?linkid=2280794)
+
+[https://learn.microsoft.com/fr-fr/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16](https://learn.microsoft.com/fr-fr/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16)
+
+### Add the .env
+
+Without the .env the database will not work.
+
 ### Running the Server
 
 1. Apply migrations:
