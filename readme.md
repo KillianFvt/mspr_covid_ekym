@@ -48,17 +48,12 @@ Without the .env the database will not work.
 
 ### Running the Server
 
-1. Apply migrations:
-    ```bash
-    python manage.py migrate
-    ```
-
-2. Start the development server:
+1. Start the development server:
     ```bash
     python manage.py runserver
     ```
 
-3. Open your browser and navigate to `http://127.0.0.1:8000/` to see the API in action.
+2. Open your browser and navigate to `http://127.0.0.1:8000/` to see the API in action.
 
 ## API Documentation
 
