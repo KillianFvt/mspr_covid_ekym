@@ -9,8 +9,12 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,13 +81,37 @@ WSGI_APPLICATION = 'mspr_covid_ekym.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'PORT': '1433',
+#         'NAME': 'ekym-covid',
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 18 for SQL Server',
+#             'server': 'tcp:ekym-db.database.windows.net',
+#             'database': 'ekym-covid',
+#             'uid': os.getenv('DB_UID'),
+#             'pwd': os.getenv('DB_PWD'),
+#             'encrypt': 'yes',
+#             'trustServerCertificate': 'no',
+#             'connection_timeout': '30',
+#         },
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',
+        'NAME': 'ekym-covid',
+        'HOST': 'ekym-db.database.windows.net',
+        'PORT': '1433',
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PWD"),
+        'OPTIONS': {
+	            'driver': 'ODBC Driver 18 for SQL Server',
+	        },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
