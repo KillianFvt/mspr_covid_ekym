@@ -27,12 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-404r4xwz8s89y5+#u4bpbwc204g^5pfqbi(e@n76%$v=w6kzs3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
-
-# Application definition
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -84,32 +81,23 @@ WSGI_APPLICATION = 'mspr_covid_ekym.wsgi.application'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'mssql',
-#         'PORT': '1433',
 #         'NAME': 'ekym-covid',
+#         'HOST': 'ekym-db.database.windows.net',
+#         'PORT': '1433',
+#         'USER': os.getenv("DB_USER") + "@ekym-db",
+#         'PASSWORD': os.getenv("DB_PWD"),
 #         'OPTIONS': {
-#             'driver': 'ODBC Driver 18 for SQL Server',
-#             'server': 'tcp:ekym-db.database.windows.net',
-#             'database': 'ekym-covid',
-#             'uid': os.getenv('DB_UID'),
-#             'pwd': os.getenv('DB_PWD'),
-#             'encrypt': 'yes',
-#             'trustServerCertificate': 'no',
-#             'connection_timeout': '30',
-#         },
+# 	            'driver': 'ODBC Driver 18 for SQL Server',
+# 	        },
 #     }
 # }
 
+# Sqlite3 database
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'ekym-covid',
-        'HOST': 'ekym-db.database.windows.net',
-        'PORT': '1433',
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PWD"),
-        'OPTIONS': {
-	            'driver': 'ODBC Driver 18 for SQL Server',
-	        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
