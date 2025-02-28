@@ -83,8 +83,16 @@ WSGI_APPLICATION = 'mspr_covid_ekym.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',
+        'NAME': 'ekym-covid',
+        'HOST': 'ekym-db.database.windows.net',
+        'PORT': '1433',
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PWD"),
+        'OPTIONS': {
+	            'driver': 'ODBC Driver 18 for SQL Server',
+                'trusted_connection': 'yes',
+	        },
     }
 }
 
