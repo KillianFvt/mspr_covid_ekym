@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from django.db.models import Sum
 from .models import CovidData
 from .serializers import CovidDataSerializer
 
@@ -87,11 +87,11 @@ class CovidDataViewSet(viewsets.ModelViewSet):
     queryset = CovidData.objects.all()
     serializer_class = CovidDataSerializer
 
-    @action(detail=False, methods=['GET'])
+    @action(detail=False, methods=['GET'], url_path='top-countries')
     def get_top_countries(self, request):
         """
         Return the top n countries with the highest number of total cases.
-        URL: GET /api/covid-data/top_countries/?top=n
+        URL: GET /api/covid-data/top-countries/?top=n
         """
         country_amt = int(request.query_params.get('top', 24))
 
@@ -111,3 +111,24 @@ class CovidDataViewSet(viewsets.ModelViewSet):
         serializer.data.append(rest_country)
 
         return Response(serializer.data)
+
+    @action(detail=False, methods=['GET'], url_path='averages')
+    def get_averages(self, request):
+        """
+        Return the averages of total cases, total deaths, total recovered, and active cases.
+        URL: GET /api/covid-data/averages/
+        """
+
+        total_population = CovidData.objects.aggregate(Sum('population'))['population__sum']
+
+        total_cases = CovidData.objects.aggregate(Sum('total_cases'))['total_cases__sum']
+        total_deaths = CovidData.objects.aggregate(Sum('total_deaths'))['total_deaths__sum']
+        total_recovered = CovidData.objects.aggregate(Sum('total_recovered'))['total_recovered__sum']
+        active_cases = CovidData.objects.aggregate(Sum('active_cases'))['active_cases__sum']
+
+        return Response({
+            'total_cases': total_cases / total_population * 100,
+            'total_deaths': total_deaths / total_population * 100,
+            'total_recovered': total_recovered / total_population * 100,
+            'active_cases': active_cases / total_population * 100
+        })
