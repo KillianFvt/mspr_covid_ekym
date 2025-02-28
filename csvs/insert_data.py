@@ -1,10 +1,8 @@
 import csv
-import json
 import os
 import traceback
 
 import django
-from datetime import datetime
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mspr_covid_ekym.settings')
 django.setup()
@@ -20,14 +18,13 @@ def insert_data_from_csv(file_path):
             reader = csv.DictReader(csvfile)
             for row in reader:
                 covid_data = CovidData(
-                    date=datetime.now().date(),  # Assuming the date is the current date
-                    country_region=row['Country/Region'],
-                    continent=row['Continent'],
-                    population=int(row['Population']),
-                    total_cases=int(row['TotalCases']),
-                    total_death=int(row['TotalDeaths']),
-                    total_recovered=int(row['TotalRecovered']),
-                    active_cases=int(row['ActiveCases'])
+                    country_region=row['Country/Region'] if row['Country/Region'] else None,
+                    continent=row['Continent'] if row['Continent'] else None,
+                    population=int(row['Population']) if row['Population'] else None,
+                    total_cases=int(row['TotalCases']) if row['TotalCases'] else None,
+                    total_deaths=int(row['TotalDeaths']) if row['TotalDeaths'] else None,
+                    total_recovered=int(row['TotalRecovered']) if row['TotalRecovered'] else None,
+                    active_cases=int(row['ActiveCases']) if row['ActiveCases'] else None
                 )
                 covid_data_list.append(covid_data)
     except Exception as e:

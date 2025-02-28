@@ -1,4 +1,7 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 from .models import CovidData
 from .serializers import CovidDataSerializer
 
@@ -83,3 +86,28 @@ class CovidDataViewSet(viewsets.ModelViewSet):
     """
     queryset = CovidData.objects.all()
     serializer_class = CovidDataSerializer
+
+    @action(detail=False, methods=['GET'])
+    def get_top_countries(self, request):
+        """
+        Return the top n countries with the highest number of total cases.
+        URL: GET /api/covid-data/top_countries/?country_amt=n
+        """
+        country_amt = int(request.query_params.get('top', 24))
+
+        top_countries = CovidData.objects.order_by('-population')[:country_amt + 1]
+        serializer = self.get_serializer(top_countries, many=True)
+
+        all_countries = CovidData.objects.order_by('-population')[country_amt + 1:]
+        rest_country = CovidData(
+            country_region='Other',
+            population=sum([country.population for country in all_countries if country.population is not None]),
+            total_cases=sum([country.total_cases for country in all_countries if country.total_cases is not None]),
+            total_deaths=sum([country.total_deaths for country in all_countries if country.total_deaths is not None]),
+            total_recovered=sum([country.total_recovered for country in all_countries if country.total_recovered is not None]),
+            active_cases=sum([country.active_cases for country in all_countries if country.active_cases is not None])
+        )
+
+        serializer.data.append(rest_country)
+
+        return Response(serializer.data)
