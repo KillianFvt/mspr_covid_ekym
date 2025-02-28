@@ -1,10 +1,11 @@
-from django.db.models.functions import Coalesce
+from django.db.models import Sum
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Sum, BigIntegerField
+
 from .models import CovidData
 from .serializers import CovidDataSerializer
+
 
 class CovidDataViewSet(viewsets.ModelViewSet):
     """
