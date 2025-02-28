@@ -109,6 +109,7 @@ DATABASES = {
         'PASSWORD': os.getenv("DB_PWD"),
         'OPTIONS': {
 	            'driver': 'ODBC Driver 18 for SQL Server',
+                'trusted_connection': 'yes',
 	        },
     }
 }
