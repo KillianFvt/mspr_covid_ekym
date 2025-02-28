@@ -96,9 +96,9 @@ class CovidDataViewSet(viewsets.ModelViewSet):
         """
         country_amt = int(request.query_params.get('top', 24))
 
-        top_countries = CovidData.objects.order_by('-population')[:country_amt + 1]
+        top_countries = CovidData.objects.order_by('-population')[:country_amt]
 
-        all_countries = CovidData.objects.order_by('-population')[country_amt + 1:]
+        all_countries = CovidData.objects.order_by('-population')[country_amt:]
         rest_country = CovidData(
             country_region='Other',
             continent='Other',
@@ -119,14 +119,24 @@ class CovidDataViewSet(viewsets.ModelViewSet):
     def get_world_ratios(self, request):
         """
         Return the ratio of total cases, total deaths, total recovered, and active cases.
+        Country instances with missing data will be excluded from the calculation.
         URL: GET /api/covid-data/world-ratios/
         """
 
-        total_population = CovidData.objects.filter(population__isnull=False).aggregate(Sum('population'))['population__sum']
+        valid_covid_data = CovidData.objects.filter(
+            population__isnull=False,
+            total_cases__isnull=False,
+            total_deaths__isnull=False,
+            total_recovered__isnull=False,
+        )
 
-        total_cases = CovidData.objects.filter(total_cases__isnull=False).aggregate(Sum('total_cases'))['total_cases__sum']
-        total_deaths = CovidData.objects.filter(total_deaths__isnull=False).aggregate(Sum('total_deaths'))['total_deaths__sum']
-        total_recovered = CovidData.objects.filter(total_recovered__isnull=False).aggregate(Sum('total_recovered'))['total_recovered__sum']
+        print(len(valid_covid_data))
+
+        total_population = valid_covid_data.aggregate(Sum('population'))['population__sum']
+
+        total_cases = valid_covid_data.aggregate(Sum('total_cases'))['total_cases__sum']
+        total_deaths = valid_covid_data.aggregate(Sum('total_deaths'))['total_deaths__sum']
+        total_recovered = valid_covid_data.aggregate(Sum('total_recovered'))['total_recovered__sum']
 
         return Response({
             'ratio_cases': total_cases / total_population * 100,
