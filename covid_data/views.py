@@ -91,7 +91,7 @@ class CovidDataViewSet(viewsets.ModelViewSet):
     def get_top_countries(self, request):
         """
         Return the top n countries with the highest number of total cases.
-        URL: GET /api/covid-data/top_countries/?country_amt=n
+        URL: GET /api/covid-data/top_countries/?top=n
         """
         country_amt = int(request.query_params.get('top', 24))
 
