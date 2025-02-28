@@ -1,7 +1,8 @@
+from django.db.models.functions import Coalesce
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Sum
+from django.db.models import Sum, BigIntegerField
 from .models import CovidData
 from .serializers import CovidDataSerializer
 
@@ -122,16 +123,8 @@ class CovidDataViewSet(viewsets.ModelViewSet):
         URL: GET /api/covid-data/averages/
         """
 
-        total_population = CovidData.objects.aggregate(Sum('population'))['population__sum']
-
-        total_cases = CovidData.objects.aggregate(Sum('total_cases'))['total_cases__sum']
-        total_deaths = CovidData.objects.aggregate(Sum('total_deaths'))['total_deaths__sum']
-        total_recovered = CovidData.objects.aggregate(Sum('total_recovered'))['total_recovered__sum']
-        active_cases = CovidData.objects.aggregate(Sum('active_cases'))['active_cases__sum']
+        total_population = CovidData.objects.aggregate(total_population=Sum('population'))['total_population']
 
         return Response({
-            'total_cases': total_cases / total_population * 100,
-            'total_deaths': total_deaths / total_population * 100,
-            'total_recovered': total_recovered / total_population * 100,
-            'active_cases': active_cases / total_population * 100
+            "total_pop": total_population,
         })

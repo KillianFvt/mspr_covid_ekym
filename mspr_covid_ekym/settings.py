@@ -54,6 +54,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://*",
+    "https://*",
+    "http://localhost:8080"
 ]
 
 ROOT_URLCONF = 'mspr_covid_ekym.urls'
@@ -80,24 +88,6 @@ WSGI_APPLICATION = 'mspr_covid_ekym.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'PORT': '1433',
-#         'NAME': 'ekym-covid',
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 18 for SQL Server',
-#             'server': 'tcp:ekym-db.database.windows.net',
-#             'database': 'ekym-covid',
-#             'uid': os.getenv('DB_UID'),
-#             'pwd': os.getenv('DB_PWD'),
-#             'encrypt': 'yes',
-#             'trustServerCertificate': 'no',
-#             'connection_timeout': '30',
-#         },
-#     }
-# }
 
 DATABASES = {
     'default': {
