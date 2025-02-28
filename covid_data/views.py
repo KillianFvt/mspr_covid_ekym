@@ -106,7 +106,6 @@ class CovidDataViewSet(viewsets.ModelViewSet):
             total_cases=sum([country.total_cases for country in all_countries if country.total_cases is not None]),
             total_deaths=sum([country.total_deaths for country in all_countries if country.total_deaths is not None]),
             total_recovered=sum([country.total_recovered for country in all_countries if country.total_recovered is not None]),
-            active_cases=sum([country.active_cases for country in all_countries if country.active_cases is not None])
         )
 
         top_countries = list(top_countries)
@@ -116,15 +115,21 @@ class CovidDataViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @action(detail=False, methods=['GET'], url_path='averages')
-    def get_averages(self, request):
+    @action(detail=False, methods=['GET'], url_path='world-ratios')
+    def get_world_ratios(self, request):
         """
-        Return the averages of total cases, total deaths, total recovered, and active cases.
-        URL: GET /api/covid-data/averages/
+        Return the ratio of total cases, total deaths, total recovered, and active cases.
+        URL: GET /api/covid-data/world-ratios/
         """
 
-        total_population = CovidData.objects.aggregate(total_population=Sum('population'))['total_population']
+        total_population = CovidData.objects.filter(population__isnull=False).aggregate(Sum('population'))['population__sum']
+
+        total_cases = CovidData.objects.filter(total_cases__isnull=False).aggregate(Sum('total_cases'))['total_cases__sum']
+        total_deaths = CovidData.objects.filter(total_deaths__isnull=False).aggregate(Sum('total_deaths'))['total_deaths__sum']
+        total_recovered = CovidData.objects.filter(total_recovered__isnull=False).aggregate(Sum('total_recovered'))['total_recovered__sum']
 
         return Response({
-            "total_pop": total_population,
+            'ratio_cases': total_cases / total_population * 100,
+            'ratio_deaths': total_deaths / total_cases * 100,
+            'ratio_recovered': total_recovered / total_cases * 100,
         })
