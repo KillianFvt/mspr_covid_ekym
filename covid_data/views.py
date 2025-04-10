@@ -1,6 +1,8 @@
 from django.db.models import Sum
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from .models import CovidData, OWIDCovidData
@@ -173,60 +175,21 @@ class OWIDCovidDataViewSet(viewsets.ModelViewSet):
     destroy:
     Delete the given OWIDCovidData instance.
     URL: DELETE /api/owid-covid-data/{id}/
+
+    Filters available:
+    - location : /api/owid-covid-data/?location=France
+    - date : /api/owid-covid-data/?date=2023-10-01
+    - iso_code : /api/owid-covid-data/?iso_code=FRA
+
+    Page limit available:
+    - limit : /api/owid-covid-data/?limit=50 (amount of items per page)
+    - offset : /api/owid-covid-data/?offset=50 (starting point for the next page)
     """
+
     queryset = OWIDCovidData.objects.all()
     serializer_class = OWIDCovidDataSerializer
-
-    @action(detail=False, methods=['GET'], url_path='top-locations')
-    def get_top_locations(self, request):
-        """
-        Return the top n locations with the highest number of total cases.
-        URL: GET /api/owid-covid-data/top-locations/?top=n
-        """
-        location_amt = int(request.query_params.get('top', 24))
-
-        # Groupe par location et prend la dernière date pour chaque location
-        latest_data = {}
-        for data in OWIDCovidData.objects.all():
-            location = data.location
-            if location not in latest_data or data.date > latest_data[location].date:
-                latest_data[location] = data
-
-        # Convertit le dictionnaire en liste et trie par total_cases
-        sorted_locations = sorted(
-            latest_data.values(),
-            key=lambda x: x.total_cases if x.total_cases is not None else 0,
-            reverse=True
-        )
-
-        top_locations = sorted_locations[:location_amt]
-        other_locations = sorted_locations[location_amt:]
-
-        serializer = OWIDCovidDataSerializer(top_locations, many=True)
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['GET'], url_path='statistics')
-    def get_statistics(self, request):
-        """
-        Return global statistics from the OWID data.
-        URL: GET /api/owid-covid-data/statistics/
-        """
-        # Groupe par location et prend la dernière date pour chaque location
-        latest_data = {}
-        for data in OWIDCovidData.objects.all():
-            location = data.location
-            if location not in latest_data or data.date > latest_data[location].date:
-                latest_data[location] = data
-
-        total_cases = sum(data.total_cases for data in latest_data.values() if data.total_cases is not None)
-        total_deaths = sum(data.total_deaths for data in latest_data.values() if data.total_deaths is not None)
-        total_population = sum(data.population for data in latest_data.values() if data.population is not None)
-
-        return Response({
-            "total_cases": total_cases,
-            "total_deaths": total_deaths,
-            "total_population": total_population,
-            "case_fatality_rate": total_deaths / total_cases if total_cases else 0,
-            "cases_per_million": (total_cases * 1000000) / total_population if total_population else 0,
-            "deaths_per_million": (total_deaths * 1000000) / total_population if total_population else 0
-        })
+    filterset_fields = ['location', 'date']
+    ordering_fields = ['location', 'date']
+    ordering = ['date']
+    search_fields = ['location', 'iso_code']
+    filter_backends = [DjangoFilterBackend]
