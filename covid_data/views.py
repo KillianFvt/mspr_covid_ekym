@@ -133,8 +133,6 @@ class CovidDataViewSet(viewsets.ModelViewSet):
             total_recovered__isnull=False,
         )
 
-        print(len(valid_covid_data))
-
         total_population = valid_covid_data.aggregate(Sum('population'))['population__sum']
 
         total_cases = valid_covid_data.aggregate(Sum('total_cases'))['total_cases__sum']
