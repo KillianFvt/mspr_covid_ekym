@@ -7,15 +7,46 @@ paths:
     get:
       operationId: listCovidData
       description: Return a list of all the existing CovidData instances.
-      parameters: []
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CovidData'
+                type: object
+                required:
+                - count
+                - results
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CovidData'
           description: ''
       tags:
       - api
@@ -36,6 +67,37 @@ paths:
               $ref: '#/components/schemas/CovidData'
       responses:
         '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovidData'
+          description: ''
+      tags:
+      - api
+  /api/covid-data/top-countries/:
+    get:
+      operationId: getTopCountriesCovidData
+      description: Return the top n countries with the highest number of total cases.
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovidData'
+          description: ''
+      tags:
+      - api
+  /api/covid-data/world-ratios/:
+    get:
+      operationId: getWorldRatiosCovidData
+      description: 'Return the ratio of total cases, total deaths, total recovered,
+        and active cases.
+
+        Country instances with missing data will be excluded from the calculation.'
+      parameters: []
+      responses:
+        '200':
           content:
             application/json:
               schema:
@@ -138,6 +200,172 @@ paths:
           description: ''
       tags:
       - api
+  /api/owid-covid-data/:
+    get:
+      operationId: listOWIDCovidData
+      description: Return a list of all the existing OWIDCovidData instances.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - count
+                - results
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OWIDCovidData'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createOWIDCovidData
+      description: Create a new OWIDCovidData instance.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OWIDCovidData'
+          description: ''
+      tags:
+      - api
+  /api/owid-covid-data/{id}/:
+    get:
+      operationId: retrieveOWIDCovidData
+      description: Return the given OWIDCovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this owid covid data.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OWIDCovidData'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateOWIDCovidData
+      description: Update the given OWIDCovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this owid covid data.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OWIDCovidData'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateOWIDCovidData
+      description: Partially update the given OWIDCovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this owid covid data.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OWIDCovidData'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OWIDCovidData'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyOWIDCovidData
+      description: Delete the given OWIDCovidData instance.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this owid covid data.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
 components:
   schemas:
     CovidData:
@@ -146,9 +374,6 @@ components:
         id:
           type: integer
           readOnly: true
-        date:
-          type: string
-          format: date
         country_region:
           type: string
           maxLength: 100
@@ -160,32 +385,98 @@ components:
           maximum: 9223372036854775807
           minimum: -9223372036854775808
           format: int64
+          nullable: true
         total_cases:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-        total_death:
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        total_deaths:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
         total_recovered:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-        active_cases:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
       required:
-      - date
       - country_region
       - continent
-      - population
-      - total_cases
-      - total_death
-      - total_recovered
-      - active_cases
+    OWIDCovidData:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        iso_code:
+          type: string
+          maxLength: 10
+        continent:
+          type: string
+          nullable: true
+          maxLength: 100
+        location:
+          type: string
+          maxLength: 100
+        date:
+          type: string
+          format: date
+        total_cases:
+          type: number
+          nullable: true
+        new_cases:
+          type: number
+          nullable: true
+        total_deaths:
+          type: number
+          nullable: true
+        new_deaths:
+          type: number
+          nullable: true
+        total_cases_per_million:
+          type: number
+          nullable: true
+        new_cases_per_million:
+          type: number
+          nullable: true
+        total_deaths_per_million:
+          type: number
+          nullable: true
+        new_deaths_per_million:
+          type: number
+          nullable: true
+        population_density:
+          type: number
+          nullable: true
+        median_age:
+          type: number
+          nullable: true
+        aged_65_older:
+          type: number
+          nullable: true
+        aged_70_older:
+          type: number
+          nullable: true
+        gdp_per_capita:
+          type: number
+          nullable: true
+        cardiovasc_death_rate:
+          type: number
+          nullable: true
+        diabetes_prevalence:
+          type: number
+          nullable: true
+        life_expectancy:
+          type: number
+          nullable: true
+        population:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+      required:
+      - iso_code
+      - location
+      - date

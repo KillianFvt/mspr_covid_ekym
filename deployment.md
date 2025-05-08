@@ -4,14 +4,14 @@ To build and deploy your Django app to Azure Container Apps, follow these steps:
    Navigate to the root directory of your project and build the Docker image using the `Dockerfile`.
 
    ```bash
-   docker build -t your_django_app:latest .
+   docker build -t mspr_covid_ekym:latest .
    ```
 
 2. **Run the Docker Container Locally (Optional):**
    Test the Docker image locally to ensure it works as expected.
 
    ```bash
-   docker run -p 8000:8000 your_django_app:latest
+   docker run -p 8000:8000 mspr_covid_ekym:latest
    ```
 
 3. **Push the Docker Image to a Container Registry:**
@@ -19,10 +19,10 @@ To build and deploy your Django app to Azure Container Apps, follow these steps:
 
    ```bash
    # Tag the image
-   docker tag your_django_app:latest your_registry/your_django_app:latest
+   docker tag mspr_covid_ekym:latest killianfvt/mspr_covid_ekym:latest
 
    # Push the image
-   docker push your_registry/your_django_app:latest
+   docker push killianfvt/mspr_covid_ekym:latest
    ```
 
 4. **Create an Azure Container App:**
